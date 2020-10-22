@@ -42,10 +42,10 @@ public function new(Request $request) {
         'required' => false,
         'attr' => array('class' => 'form-control')
       ))
-      // ->add('category', TextType::class, array(
-      //   'required' => false,
-      //   'attr' => array('class' => 'form-control')
-      // ))
+      ->add('category', TextType::class, array(
+        'required' => false,
+        'attr' => array('class' => 'form-control')
+      ))
       ->add('price', TextType::class, array(
         'attr' => array('class' => 'form-control')
       ))
@@ -53,13 +53,6 @@ public function new(Request $request) {
         'label' => 'Create',
         'attr' => array('class' => 'btn btn-primary mt-3')
       ))
-      ->add('category', ChoiceType::class, [
-        'choices'  => [
-            'Maybe' => null,
-            'Yes' => true,
-            'No' => false,
-        ],
-    ])
     ->getForm();
 
     $form->handleRequest($request);
