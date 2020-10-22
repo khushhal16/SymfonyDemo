@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+{% block title %}Symphart Articles {% endblock %}
+
+{% block body %}
+{% if articles %}
+<table id="articles" class="table table-stripped">
+<thead>
+<tr>
+<th>Article Title</th>
+<th>Actions</th>
+</tr>
+<tbody>
+{% for article in articles %}
+<tr>
+<td>{{article.title}}</td>
+<td>
+<a class="btn btn-dark" href="/article/{{ article.id}}">show</a>
+<a class="btn btn-light" href="/article/update/{{ article.id}}">Edit</a>
+<a class="btn btn-danger delete-article" href="#" data-id="{{article.id}}">Delete</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</thead>
+</table>
+{% else %}
+<p>No Articles</p>
+{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+  <script >
+  const articles = document.getElementById('articles');
+  if(articles){
+      articles.addEventListener('click',(e)=>{
+          if(e.target.className === 'btn btn-danger delete-article') {
+              if (confirm('Are you sure?')){
+                  const id = e.target.getAttribute('data-id');
+                   fetch(`/article/delete/${id}`, {
+                         method: 'DELETE'
+                    }).then(res => window.location.reload());
+              }
+          }
+      });
+  }
+  </script>
+{% endblock %}
+

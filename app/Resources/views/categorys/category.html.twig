@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+{% block title %}Symphart categorys {% endblock %}
+
+{% block body %}
+{% if categorys %}
+<table id="categorys" class="table table-stripped">
+<thead>
+<tr>
+<th>category Title</th>
+<th>Actions</th>
+</tr>
+<tbody>
+{% for category in categorys %}
+<tr>
+<td>{{category.name}}</td>
+<td>
+<a class="btn btn-dark" href="/category/{{ category.id}}">show</a>
+<a class="btn btn-light" href="/category/update/{{ category.id}}">Edit</a>
+<a class="btn btn-danger delete-category" href="#" data-id="{{category.id}}">Delete</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</thead>
+</table>
+{% else %}
+<p>No categorys</p>
+{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+  <script >
+  const categorys = document.getElementById('categorys');
+  if(categorys){
+      categorys.addEventListener('click',(e)=>{
+          if(e.target.className === 'btn btn-danger delete-category') {
+              if (confirm('Are you sure?')){
+                  const id = e.target.getAttribute('data-id');
+                   fetch(`/category/delete/${id}`, {
+                         method: 'DELETE'
+                    }).then(res => window.location.reload());
+              }
+          }
+      });
+  }
+  </script>
+{% endblock %}
+

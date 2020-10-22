@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+{% block title %}Symphart Products {% endblock %}
+
+{% block body %}
+{% if products %}
+<table id="products" class="table table-stripped">
+<thead>
+<tr>
+<th>Product Name</th>
+<th>Actions</th>
+</tr>
+<tbody>
+{% for product in products %}
+<tr>
+<td>{{product.name}}</td>
+<td>
+<a class="btn btn-dark" href="/product/{{ product.id}}">show</a>
+<a class="btn btn-light" href="/product/update/{{ product.id}}">Edit</a>
+<a class="btn btn-danger delete-product" href="#" data-id="{{product.id}}">Delete</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</thead>
+</table>
+{% else %}
+<p>No products</p>
+{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+  <script >
+  const products = document.getElementById('products');
+  if(products){
+      products.addEventListener('click',(e)=>{
+          if(e.target.className === 'btn btn-danger delete-product') {
+              if (confirm('Are you sure?')){
+                  const id = e.target.getAttribute('data-id');
+                   fetch(`/product/delete/${id}`, {
+                         method: 'DELETE'
+                    }).then(res => window.location.reload());
+              }
+          }
+      });
+  }
+  </script>
+{% endblock %}
+
