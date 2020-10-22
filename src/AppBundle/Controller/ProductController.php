@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class ProductController extends Controller{
 
@@ -41,10 +42,10 @@ public function new(Request $request) {
         'required' => false,
         'attr' => array('class' => 'form-control')
       ))
-      ->add('category', TextType::class, array(
-        'required' => false,
-        'attr' => array('class' => 'form-control')
-      ))
+      // ->add('category', TextType::class, array(
+      //   'required' => false,
+      //   'attr' => array('class' => 'form-control')
+      // ))
       ->add('price', TextType::class, array(
         'attr' => array('class' => 'form-control')
       ))
@@ -52,7 +53,14 @@ public function new(Request $request) {
         'label' => 'Create',
         'attr' => array('class' => 'btn btn-primary mt-3')
       ))
-      ->getForm();
+      ->add('category', ChoiceType::class, [
+        'choices'  => [
+            'Maybe' => null,
+            'Yes' => true,
+            'No' => false,
+        ],
+    ])
+    ->getForm();
 
     $form->handleRequest($request);
     
@@ -118,6 +126,34 @@ public function new(Request $request) {
 
 }
 
+/**
+     * @Route("/product/savee")
+     */
+    public function createProductAction()
+    {
+        $category = new Category();
+        $category->setName('Computer');
+        $category->setDescription('Computer Peripherals');
+
+        $product = new Product();
+        $product->setName('Keyboard');
+        $product->setPrice(19.99);
+        $product->setDescription('Ergonomic and stylish!');
+
+        // relates this product to the category
+        $product->setCategory($category);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($category);
+        $entityManager->persist($product);
+        $entityManager->flush();
+
+        return new Response(
+            'Saved new product with id: '.$product->getId()
+            .' and new category with id: '.$category->getId()
+        );
+    } 
+
  /**
      * @Route("/product/{id}", name="product_show")
      */
@@ -142,32 +178,7 @@ public function new(Request $request) {
         $response->send();
       }
 
-/**
-     * @Route("/product/savee")
-     */
-      public function createProductAction()
-      {
-          $category = new Category();
-          $category->setName('Computer Peripherals');
-  
-          $product = new Product();
-          $product->setName('Keyboard');
-          $product->setPrice(19.99);
-          $product->setDescription('Ergonomic and stylish!');
-  
-          // relates this product to the category
-          $product->setCategory($category);
-  
-          $entityManager = $this->getDoctrine()->getManager();
-          $entityManager->persist($category);
-          $entityManager->persist($product);
-          $entityManager->flush();
-  
-          return new Response(
-              'Saved new product with id: '.$product->getId()
-              .' and new category with id: '.$category->getId()
-          );
-      }  
+ 
 
 }
 
